@@ -149,7 +149,7 @@ select employee_name from works,( select company_name, avg(salary) as avg_salary
 | Mukul         |
 +---------------+
 
-select tbl.company_name from (select company_name, sum(salary) as payroll from works group by company_name ) as tbl order by tbl.payroll limit 1;
+select w.company_name from (select tbl.company_name, tbl.payroll as min_payroll from (select company_name, sum(salary) as payroll from works group by company_name ) as tbl order by tbl.payroll limit 1) as final_tbl , works as w where w.salary = final_tbl.min_payroll;
 
 +--------------+
 | company_name |
