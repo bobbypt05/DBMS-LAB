@@ -38,19 +38,20 @@ insert into currency_table values("Paris","EUR");
 | Paris    | EUR           |
 +----------+---------------+
 
-select employee.fname, employee.office, employee.EID, employee.salary, currency_table.currency_code from employee, currency_table where employee.office = currency_table.location;  
+select employee.office, employee.EID, concat(employee.salary," ",currency_table.currency_code) as salary from employee, currency_table where employee.office = currency_table.location;
 
-+--------+---------+------+--------+---------------+
-| fname  | office  | EID  | salary | currency_code |
-+--------+---------+------+--------+---------------+
-| John   | Chicago | 1777 |  20000 | USD           |
-| Trevor | London  | 1945 |  55055 | GBP           |
-| Zoe    | Paris   | 2050 |  55055 | EUR           |
-| Kathy  | Chicago | 2051 |  20000 | USD           |
-| Trevor | London  | 2398 |  55055 | GBP           |
-| John   | London  | 7777 | 130000 | GBP           |
-| Alice  | London  | 8888 | 111114 | GBP           |
-+--------+---------+------+--------+---------------+
++---------+------+------------+
+| office  | EID  | salary     |
++---------+------+------------+
+| Chicago | 1777 | 20000 USD  |
+| London  | 1945 | 55055 GBP  |
+| Paris   | 2050 | 55055 EUR  |
+| Chicago | 2051 | 20000 USD  |
+| London  | 2398 | 55055 GBP  |
+| London  | 7777 | 130000 GBP |
+| London  | 8888 | 111114 GBP |
++---------+------+------------+
+
 
 
 select a.fname, a.lname, a.EID from employee a, employee b where a.fname = b.fname and a.EID != b.EID;
