@@ -38,7 +38,7 @@ insert into currency_table values("Paris","EUR");
 | Paris    | EUR           |
 +----------+---------------+
 
-select employee.office, employee.EID, concat(employee.salary," ",currency_table.currency_code) as salary from employee, currency_table where employee.office = currency_table.location;
+sselect employee.office, employee.EID, concat(employee.salary," ",currency_table.currency_code) as salary from employee inner join currency_table on employee.office = currency_table.location;
 
 +---------+------+------------+
 | office  | EID  | salary     |
