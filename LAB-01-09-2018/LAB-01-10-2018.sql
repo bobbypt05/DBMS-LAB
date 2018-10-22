@@ -38,7 +38,7 @@ insert into currency_table values("Paris","EUR");
 | Paris    | EUR           |
 +----------+---------------+
 
-sselect employee.office, employee.EID, concat(employee.salary," ",currency_table.currency_code) as salary from employee inner join currency_table on employee.office = currency_table.location;
+select employee.office, employee.EID, concat(employee.salary," ",currency_table.currency_code) as salary from employee inner join currency_table on employee.office = currency_table.location;
 
 +---------+------+------------+
 | office  | EID  | salary     |
@@ -113,7 +113,7 @@ select a.dno from (select dno,count(bonus) as bonus_count from employee where bo
 
 ####################################################### PART B ##############################################################################
 
-select a.salary from (select Distinct salary from employeeB) as a order by salary limit 1, 1;
+select a.salary from (select Distinct salary from employee) as a order by salary limit 1, 1;
 
 +--------+
 | salary |

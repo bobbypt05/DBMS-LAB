@@ -239,3 +239,184 @@ select a.pack_id, a.speed from  packages a, packages b where b.pack_id = 7 and b
 +---------+-------+
 |     107 | 30000 |
 +---------+-------+
+
+-----------------------------------------------------------------------------------Q2---------------------------------------------------------------------------------------------------
+
+create table actor (act_id int primary key, act_name varchar(20), act_gender varchar(10));
+
+insert into actor values (1,'salman', 'male');
+insert into actor values (2,'Disha', 'female' );
+insert into actor values (3,'Roy', 'male' );
+insert into actor values (4,'Himanshu', 'male');
+insert into actor values (5,'Mithila', 'female');
+insert into actor values (6,'Hardik', 'male');
+
++--------+----------+------------+
+| act_id | act_name | act_gender |
++--------+----------+------------+
+|      1 | salman   | male       |
+|      2 | Disha    | female     |
+|      3 | Roy      | male       |
+|      4 | Himanshu | male       |
+|      5 | Mithila  | female     |
+|      6 | Hardik   | male       |
++--------+----------+------------+
+
+
+create table director (dir_id int primary key, dir_name varchar(20), dri_phone int(10));
+
+insert into director values (1,'Michael',1234567890);
+insert into director values (2,'Robert',1222267890);
+insert into director values (3,'Stephen', 1231231234);	
+
++--------+----------+------------+
+| dir_id | dir_name | dri_phone  |
++--------+----------+------------+
+|      1 | Michael  | 1234567890 |
+|      2 | Robert   | 1222267890 |
+|      3 | Stephen  | 1231231234 |
++--------+----------+------------+
+
+create table movies (mov_id int primary key, mov_title varchar(20), mov_year int(4), mov_language varchar(10), dir_id int, foreign key(dir_id) references director(dir_id));
+
+insert into movies values (1,'xyz', 2016, 'Hindi',1);
+insert into movies values (2,'abc', 2014, 'Hindi',2);
+insert into movies values (3,'Yaad', 2009,'Hindi',3);
+insert into movies values (4,'Yaad-2', 2018,'Hindi',3);
+
++--------+-----------+----------+--------------+--------+
+| mov_id | mov_title | mov_year | mov_language | dir_id |
++--------+-----------+----------+--------------+--------+
+|      1 | xyz       |     2016 | Hindi        |      1 |
+|      2 | abc       |     2014 | Hindi        |      2 |
+|      3 | Yaad      |     2009 | Hindi        |      3 |
+|      4 | Yaad-2    |     2018 | Hindi        |      3 |
++--------+-----------+----------+--------------+--------+
+
+create table movie_cast (act_id int, mov_id int, role varchar(20), foreign key(act_id) references actor(act_id), foreign key(mov_id) references movies(mov_id));
+
+insert into movie_cast values (1,1,'Hero');
+insert into movie_cast values(2,1,'Heroine');
+insert into movie_cast values(3,2,'Hero');
+insert into movie_cast values(2,2,'Heroine');
+insert into movie_cast values(3,1,'villain');
+insert into movie_cast values(4,3,'Hero');
+insert into movie_cast values(5,3,'Heroine');
+insert into movie_cast values(4,4,'Hero');
+insert into movie_cast values(5,4,'Heroine');
+insert into movie_cast values(1,4,'The Innocents');
+insert into movie_cast values(4,1,'The Innocents');
+
++--------+--------+---------------+
+| act_id | mov_id | role          |
++--------+--------+---------------+
+|      1 |      1 | Hero          |
+|      2 |      1 | Heroine       |
+|      3 |      2 | Hero          |
+|      2 |      2 | Heroine       |
+|      3 |      1 | villain       |
+|      4 |      3 | Hero          |
+|      5 |      3 | Heroine       |
+|      4 |      4 | Hero          |
+|      5 |      4 | Heroine       |
+|      1 |      4 | The Innocents |
+|      4 |      1 | The Innocents |
++--------+--------+---------------+
+
+
+create table rating (mov_id int, rev_stars int, reviewer varchar(10), foreign key(mov_id) references movies(mov_id));
+
+insert into rating values (1, 4, 'Hardik');
+insert into rating values (1, 3, 'Chetan');
+insert into rating values (1, 2, 'Prince');
+insert into rating values (2, 5, 'Hardik');
+insert into rating values (2, 4, 'Chetan');	
+insert into rating values (3, 3, 'Hardik');
+insert into rating values (4, 5, 'Hardik');
+insert into rating values (4, 4, 'Chetan');
+
++--------+-----------+----------+
+| mov_id | rev_stars | reviewer |
++--------+-----------+----------+
+|      1 |         4 | Hardik   |
+|      1 |         3 | Chetan   |
+|      1 |         2 | Prince   |
+|      2 |         5 | Hardik   |
+|      2 |         4 | Chetan   |
+|      3 |         4 | Hardik   |
+|      4 |         4 | Hardik   |
+|      4 |         4 | Chetan   |
++--------+-----------+----------+
+
+select mov_title from movies, director where movies.dir_id = director.dir_id and director.dir_name = "Michael";
+
++-----------+
+| mov_title |
++-----------+
+| xyz       |
++-----------+
+
+select actor.act_name from actor, (select act_id, count(act_id) as movie_count from movie_cast group by (act_id) ) as tbl where tbl.act_id = actor.act_id and movie_count > 1;
+
++----------+
+| act_name |
++----------+
+| salman   |
+| Disha    |
+| Roy      |
+| Himanshu |
+| Mithila  |
++----------+
+
+select distinct act_name from actor, movies, movie_cast where actor.act_id = movie_cast.act_id and movie_cast.mov_id = movies.mov_id and (movies.mov_year < 2010 or movies.mov_year > 2017);
+
++----------+
+| act_name |
++----------+
+| Himanshu |
+| Mithila  |
+| salman   |
++----------+
+
+select movies.mov_title, tbl.max_rating from movies, (select mov_id, max(rev_stars) as max_rating from rating group by mov_id) as tbl where movies.mov_id = tbl.mov_id order by movies.mov_title;
+
++-----------+------------+
+| mov_title | max_rating |
++-----------+------------+
+| abc       |          5 |
+| xyz       |          4 |
+| Yaad      |          4 |
+| Yaad-2    |          4 |
++-----------+------------+
+
+update rating, movies, director set rating.rev_stars = 4 where rating.mov_id = movies.mov_id and movies.dir_id = director.dir_id and dir_name = 'Stephen';
+
+Query OK :P
+
+select director.dir_name from director, movies, movie_cast where director.dir_id = movies.dir_id and movies.mov_id = movie_cast.mov_id and movie_cast.role = 'The Innocents'; 
+
++----------+
+| dir_name |
++----------+
+| Stephen  |
+| Michael  |
++----------+
+
+select movies.mov_title from movies, rating where movies.mov_id = rating.mov_id and rating.rev_stars = 0;
+
+Empty set (0.00 sec)
+
+select tbl.reviewer , movies.mov_title from movies, rating, (select reviewer, count(reviewer) as countx from rating group by reviewer) as tbl where movies.mov_id = rating.mov_id and rating.reviewer = tbl.reviewer and tbl.countx > 1;
+
++----------+-----------+
+| reviewer | mov_title |
++----------+-----------+
+| Hardik   | xyz       |
+| Chetan   | xyz       |
+| Hardik   | abc       |
+| Chetan   | abc       |
+| Hardik   | Yaad      |
+| Hardik   | Yaad-2    |
+| Chetan   | Yaad-2    |
++----------+-----------+
+
