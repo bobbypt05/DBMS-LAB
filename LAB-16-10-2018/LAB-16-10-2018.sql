@@ -356,17 +356,16 @@ select mov_title from movies, director where movies.dir_id = director.dir_id and
 | xyz       |
 +-----------+
 
-select actor.act_name from actor, (select act_id, count(act_id) as movie_count from movie_cast group by (act_id) ) as tbl where tbl.act_id = actor.act_id and movie_count > 1;
+select  distinct movies.mov_title from movie_cast, movies, (select act_id, count(act_id) as movie_count from movie_cast group by (act_id) ) as tbl where movie_cast.mov_id = movies.mov_id and movie_cast.act_id = tbl.act_id and movie_count > 1;
 
-+----------+
-| act_name |
-+----------+
-| salman   |
-| Disha    |
-| Roy      |
-| Himanshu |
-| Mithila  |
-+----------+
++-----------+
+| mov_title |
++-----------+
+| xyz       |
+| abc       |
+| Yaad      |
+| Yaad-2    |
++-----------+
 
 select distinct act_name from actor, movies, movie_cast where actor.act_id = movie_cast.act_id and movie_cast.mov_id = movies.mov_id and (movies.mov_year < 2010 or movies.mov_year > 2017);
 
